@@ -215,6 +215,94 @@ BEGIN
     WHERE ProjectID = OLD.ProjectID;
 END //
 
+DELIMITER //
+
+-- Trigger to ensure valid StartDate for Tasks
+CREATE TRIGGER verify_task_startdate1
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.StartDate < CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Start date must be current or future date';
+    END IF;
+END //
+
+CREATE TRIGGER verify_task_startdate2
+BEFORE UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.StartDate < CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Start date must be current or future date';
+    END IF;
+END //
+
+-- Trigger to ensure valid StartDate for Projects
+CREATE TRIGGER verify_project_startdate1
+BEFORE INSERT ON projects
+FOR EACH ROW
+BEGIN
+    IF NEW.StartDate < CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Start date must be current or future date';
+    END IF;
+END //
+
+CREATE TRIGGER verify_project_startdate2
+BEFORE UPDATE ON projects
+FOR EACH ROW
+BEGIN
+    IF NEW.StartDate < CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Start date must be current or future date';
+    END IF;
+END //
+
+DELIMITER //
+
+-- Trigger to ensure EndDate is at least one day after StartDate for Tasks
+CREATE OR REPLACE TRIGGER task_startenddates_insert
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.EndDate <= NEW.StartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'End date must be at least one day after start date';
+    END IF;
+END //
+
+CREATE OR REPLACE TRIGGER task_startenddates_update
+BEFORE UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    IF NEW.EndDate <= NEW.StartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'End date must be at least one day after start date';
+    END IF;
+END //
+
+-- Trigger to ensure EndDate is at least one day after StartDate for projects
+CREATE OR REPLACE TRIGGER project_startenddates_insert
+BEFORE INSERT ON projects
+FOR EACH ROW
+BEGIN
+    IF NEW.EndDate <= NEW.StartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'End date must be at least one day after start date';
+    END IF;
+END //
+
+CREATE OR REPLACE TRIGGER project_startenddates_update
+BEFORE UPDATE ON projects
+FOR EACH ROW
+BEGIN
+    IF NEW.EndDate <= NEW.StartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'End date must be at least one day after start date';
+    END IF;
+END //
+
 DELIMITER ;
 
 -- End of Sample_CRUD_Queries.sql
