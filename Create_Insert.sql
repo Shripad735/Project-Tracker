@@ -134,4 +134,87 @@ INSERT INTO Notifications (UserID, ProjectID, TaskID, Message) VALUES
 (5, 3, 4, 'Task 4 has been assigned to you.'),
 (2, 4, 5, 'Task 5 has been assigned to you.');
 
+-- Triggers
+DELIMITER //
+
+CREATE OR REPLACE TRIGGER task_insert
+AFTER INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET DueDate = (
+        SELECT MAX(EndDate)
+        FROM Tasks
+        WHERE MilestoneID = NEW.MilestoneID
+    )
+    WHERE MilestoneID = NEW.MilestoneID;
+END //
+
+CREATE OR REPLACE TRIGGER task_update
+AFTER UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET DueDate = (
+        SELECT MAX(EndDate)
+        FROM Tasks
+        WHERE MilestoneID = NEW.MilestoneID
+    )
+    WHERE MilestoneID = NEW.MilestoneID;
+END //
+
+CREATE OR REPLACE TRIGGER task_delete
+AFTER DELETE ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET DueDate = (
+        SELECT MAX(EndDate)
+        FROM Tasks
+        WHERE MilestoneID = OLD.MilestoneID
+    )
+    WHERE MilestoneID = OLD.MilestoneID;
+END //
+
+CREATE OR REPLACE TRIGGER milestone_insert
+AFTER INSERT ON Milestones
+FOR EACH ROW
+BEGIN
+    UPDATE Projects
+    SET EndDate = (
+        SELECT MAX(DueDate)
+        FROM Milestones
+        WHERE ProjectID = NEW.ProjectID
+    )
+    WHERE ProjectID = NEW.ProjectID;
+END //
+
+CREATE OR REPLACE TRIGGER milestone_update
+AFTER UPDATE ON Milestones
+FOR EACH ROW
+BEGIN
+    UPDATE Projects
+    SET EndDate = (
+        SELECT MAX(DueDate)
+        FROM Milestones
+        WHERE ProjectID = NEW.ProjectID
+    )
+    WHERE ProjectID = NEW.ProjectID;
+END //
+
+CREATE OR REPLACE TRIGGER milestone_delete
+AFTER DELETE ON Milestones
+FOR EACH ROW
+BEGIN
+    UPDATE Projects
+    SET EndDate = (
+        SELECT MAX(DueDate)
+        FROM Milestones
+        WHERE ProjectID = OLD.ProjectID
+    )
+    WHERE ProjectID = OLD.ProjectID;
+END //
+
+DELIMITER ;
+
 -- End of Sample_CRUD_Queries.sql
