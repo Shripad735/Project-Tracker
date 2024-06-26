@@ -462,6 +462,48 @@ BEGIN
     END IF;
 END //
 
+-- Trigger after inserting a task
+CREATE TRIGGER after_task_insert_set_milestone_startdate
+AFTER INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET StartDate = (
+        SELECT MIN(StartDate)
+        FROM Tasks
+        WHERE MilestoneID = NEW.MilestoneID
+    )
+    WHERE MilestoneID = NEW.MilestoneID;
+END //
+
+-- Trigger after updating a task
+CREATE TRIGGER after_task_update_set_milestone_startdate
+AFTER UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET StartDate = (
+        SELECT MIN(StartDate)
+        FROM Tasks
+        WHERE MilestoneID = NEW.MilestoneID
+    )
+    WHERE MilestoneID = NEW.MilestoneID;
+END //
+
+-- Trigger after deleting a task
+CREATE TRIGGER after_task_delete_set_milestone_startdate
+AFTER DELETE ON Tasks
+FOR EACH ROW
+BEGIN
+    UPDATE Milestones
+    SET StartDate = (
+        SELECT MIN(StartDate)
+        FROM Tasks
+        WHERE MilestoneID = OLD.MilestoneID
+    )
+    WHERE MilestoneID = OLD.MilestoneID;
+END //
+
 DELIMITER ;
 
 -- End of Sample_CRUD_Queries.sql
