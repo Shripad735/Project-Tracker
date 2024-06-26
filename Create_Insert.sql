@@ -504,6 +504,33 @@ BEGIN
     WHERE MilestoneID = OLD.MilestoneID;
 END //
 
+-- Trigger to check if the StartDate of the milestone is equal to or after the StartDate of the corresponding project before inserting a milestone
+CREATE TRIGGER check_milestone_startdate_insert
+BEFORE INSERT ON Milestones
+FOR EACH ROW
+BEGIN
+    DECLARE projectStartDate DATE;
+    SELECT StartDate INTO projectStartDate FROM Projects WHERE ProjectID = NEW.ProjectID;
+    IF NEW.StartDate < projectStartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Milestone start date must be on or after the project start date';
+    END IF;
+END //
+
+-- Trigger to check if the StartDate of the milestone is equal to or after the StartDate of the corresponding project before updating a milestone
+CREATE TRIGGER check_milestone_startdate_update
+BEFORE UPDATE ON Milestones
+FOR EACH ROW
+BEGIN
+    DECLARE projectStartDate DATE;
+    SELECT StartDate INTO projectStartDate FROM Projects WHERE ProjectID = NEW.ProjectID;
+    IF NEW.StartDate < projectStartDate THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Milestone start date must be on or after the project start date';
+    END IF;
+END //
+
+DELIMITER ;
 DELIMITER ;
 
 -- End of Sample_CRUD_Queries.sql
