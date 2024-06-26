@@ -303,6 +303,34 @@ BEGIN
     END IF;
 END //
 
+DELIMITER //
+
+-- Trigger to check if the AssignedTo user has UserTypeID 2 before inserting a task
+CREATE TRIGGER check_assignedto_user_insert
+BEFORE INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    DECLARE userType INT;
+    SELECT UserTypeID INTO userType FROM Users WHERE UserID = NEW.AssignedTo;
+    IF userType != 2 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign the task to this user';
+    END IF;
+END //
+
+-- Trigger to check if the AssignedTo user has UserTypeID 2 before updating a task
+CREATE TRIGGER check_assignedto_user_update
+BEFORE UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    DECLARE userType INT;
+    SELECT UserTypeID INTO userType FROM Users WHERE UserID = NEW.AssignedTo;
+    IF userType != 2 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Cannot assign the task to this user';
+    END IF;
+END //
+
 DELIMITER ;
 
 -- End of Sample_CRUD_Queries.sql
