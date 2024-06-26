@@ -331,6 +331,137 @@ BEGIN
     END IF;
 END //
 
+-- Trigger after inserting a task
+CREATE TRIGGER check_taskstatus_insert
+AFTER INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    -- If a single task is in progress, set the milestone status to 'In Progress'
+    IF NEW.Status = 'In Progress' THEN
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+
+    -- If all tasks are completed, set the milestone status to 'Completed'
+    IF (SELECT COUNT(*) FROM Tasks WHERE MilestoneID = NEW.MilestoneID AND Status != 'Completed') = 0 THEN
+        UPDATE Milestones
+        SET Status = 'Completed'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+END //
+
+-- Trigger after updating a task
+CREATE TRIGGER check_taskstatus_update
+AFTER UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    -- If a single task is in progress, set the milestone status to 'In Progress'
+    IF NEW.Status = 'In Progress' THEN
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+
+    -- If all tasks are completed, set the milestone status to 'Completed'
+    IF (SELECT COUNT(*) FROM Tasks WHERE MilestoneID = NEW.MilestoneID AND Status != 'Completed') = 0 THEN
+        UPDATE Milestones
+        SET Status = 'Completed'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+END //
+
+-- Trigger after deleting a task
+CREATE TRIGGER check_taskstatus_delete
+AFTER DELETE ON Tasks
+FOR EACH ROW
+BEGIN
+    -- If a single task is in progress, set the milestone status to 'In Progress'
+    IF (SELECT COUNT(*) FROM Tasks WHERE MilestoneID = OLD.MilestoneID AND Status = 'In Progress') > 0 THEN
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = OLD.MilestoneID;
+    END IF;
+
+    -- If all tasks are completed, set the milestone status to 'Completed'
+    IF (SELECT COUNT(*) FROM Tasks WHERE MilestoneID = OLD.MilestoneID AND Status != 'Completed') = 0 THEN
+        UPDATE Milestones
+        SET Status = 'Completed'
+        WHERE MilestoneID = OLD.MilestoneID;
+    END IF;
+END //
+
+-- Trigger after inserting a task
+CREATE TRIGGER after_task_insert_update_milestone_status
+AFTER INSERT ON Tasks
+FOR EACH ROW
+BEGIN
+    DECLARE total_tasks INT;
+    DECLARE completed_tasks INT;
+    
+    -- Count total tasks and completed tasks for the milestone
+    SELECT COUNT(*), COUNT(CASE WHEN Status = 'Completed' THEN 1 END)
+    INTO total_tasks, completed_tasks
+    FROM Tasks
+    WHERE MilestoneID = NEW.MilestoneID;
+
+    -- If all tasks are completed and a new task is inserted as Not Started, set milestone status to In Progress
+    IF total_tasks = completed_tasks + 1 AND NEW.Status = 'Not Started' THEN
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+END //
+
+-- Trigger after updating a task
+CREATE TRIGGER after_task_update_update_milestone_status
+AFTER UPDATE ON Tasks
+FOR EACH ROW
+BEGIN
+    DECLARE total_tasks INT;
+    DECLARE completed_tasks INT;
+    
+    -- Count total tasks and completed tasks for the milestone
+    SELECT COUNT(*), COUNT(CASE WHEN Status = 'Completed' THEN 1 END)
+    INTO total_tasks, completed_tasks
+    FROM Tasks
+    WHERE MilestoneID = NEW.MilestoneID;
+
+    -- If all tasks are completed and a task status changes to Not Started, set milestone status to In Progress
+    IF total_tasks = completed_tasks + 1 AND NEW.Status = 'Not Started' THEN
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = NEW.MilestoneID;
+    END IF;
+END //
+
+-- Trigger after deleting a task
+CREATE TRIGGER after_task_delete_update_milestone_status
+AFTER DELETE ON Tasks
+FOR EACH ROW
+BEGIN
+    DECLARE total_tasks INT;
+    DECLARE completed_tasks INT;
+    
+    -- Count total tasks and completed tasks for the milestone
+    SELECT COUNT(*), COUNT(CASE WHEN Status = 'Completed' THEN 1 END)
+    INTO total_tasks, completed_tasks
+    FROM Tasks
+    WHERE MilestoneID = OLD.MilestoneID;
+
+    -- If all tasks are completed and at least one task exists, set milestone status to Completed
+    IF total_tasks = completed_tasks AND total_tasks > 0 THEN
+        UPDATE Milestones
+        SET Status = 'Completed'
+        WHERE MilestoneID = OLD.MilestoneID;
+    ELSE
+        -- If all tasks are not completed, set milestone status to In Progress
+        UPDATE Milestones
+        SET Status = 'In Progress'
+        WHERE MilestoneID = OLD.MilestoneID;
+    END IF;
+END //
+
 DELIMITER ;
 
 -- End of Sample_CRUD_Queries.sql
