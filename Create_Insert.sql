@@ -88,55 +88,63 @@ CREATE TABLE Notifications (
     FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID)
 );
 
+-- Insert Users
+INSERT INTO Users (Username, Password, Email, UserTypeID) VALUES
+('RajeshKumar', 'hashed_password_1', 'rajesh.kumar@email.com', 1),
+('PriyaSharma', 'hashed_password_2', 'priya.sharma@email.com', 2),
+('AmitPatel', 'hashed_password_3', 'amit.patel@email.com', 2),
+('NehaSingh', 'hashed_password_4', 'neha.singh@email.com', 2),
+('VikasMehta', 'hashed_password_5', 'vikas.mehta@email.com', 2),
+('AnanyaReddy', 'hashed_password_6', 'ananya.reddy@email.com', 2),
+('SureshIyer', 'hashed_password_7', 'suresh.iyer@email.com', 2),
+('DivyaGupta', 'hashed_password_8', 'divya.gupta@email.com', 2),
+('RahulVerma', 'hashed_password_9', 'rahul.verma@email.com', 2),
+('SunitaKapoor', 'hashed_password_10', 'sunita.kapoor@email.com', 2);
 
-INSERT INTO Users (Username, Password, Email, UserTypeID) VALUES 
-('AmitKumar', 'password123', 'amit.kumar@example.com', 1),
-('SitaPatel', 'password123', 'sita.patel@example.com', 2),
-('RajeshSharma', 'password123', 'rajesh.sharma@example.com', 2),
-('MeenaGupta', 'password123', 'meena.gupta@example.com', 2),
-('VikramSingh', 'password123', 'vikram.singh@example.com', 2);
-
+-- Insert Projects
 INSERT INTO Projects (ProjectName, Description, StartDate, EndDate, Status) VALUES
-('Project Alpha', 'Description for Project Alpha', '2024-01-01', '2024-06-30', 'Not Started'),
-('Project Beta', 'Description for Project Beta', '2024-02-01', '2024-07-30', 'In Progress'),
-('Project Gamma', 'Description for Project Gamma', '2024-03-01', '2024-08-30', 'Completed'),
-('Project Delta', 'Description for Project Delta', '2024-04-01', '2024-09-30', 'Not Started'),
-('Project Epsilon', 'Description for Project Epsilon', '2024-05-01', '2024-10-30', 'In Progress');
+('E-commerce Platform Upgrade', 'Upgrade the existing e-commerce platform to improve performance and user experience', '2024-07-01', '2024-12-31', 'In Progress'),
+('Mobile App Development', 'Develop a new mobile app for customer engagement', '2024-08-15', '2025-02-28', 'Not Started'),
+('Data Center Migration', 'Migrate on-premises data center to cloud infrastructure', '2024-06-01', '2024-11-30', 'In Progress');
 
+-- Insert Milestones
 INSERT INTO Milestones (ProjectID, MilestoneName, Description, DueDate) VALUES
-(1, 'Milestone 1', 'Description for Milestone 1', '2024-02-01'),
-(1, 'Milestone 2', 'Description for Milestone 2', '2024-04-01'),
-(2, 'Milestone 1', 'Description for Milestone 1', '2024-03-01'),
-(3, 'Milestone 1', 'Description for Milestone 1', '2024-05-01'),
-(4, 'Milestone 1', 'Description for Milestone 1', '2024-06-01');
+(1, 'Backend Optimization', 'Optimize database queries and server-side code', '2024-09-30'),
+(1, 'Frontend Redesign', 'Implement new responsive design', '2024-11-15'),
+(2, 'Requirements Gathering', 'Collect and finalize app requirements', '2024-09-15'),
+(2, 'UI/UX Design', 'Create app wireframes and design mockups', '2024-10-31'),
+(3, 'Infrastructure Assessment', 'Evaluate current infrastructure and plan migration', '2024-07-31'),
+(3, 'Data Migration', 'Migrate data to cloud storage', '2024-10-15');
 
+-- Insert Tasks
 INSERT INTO Tasks (ProjectID, MilestoneID, TaskName, Description, AssignedTo, StartDate, EndDate, Status) VALUES
-(1, 1, 'Task 1', 'Description for Task 1', 2, '2024-01-10', '2024-01-20', 'Not Started'),
-(1, 2, 'Task 2', 'Description for Task 2', 3, '2024-02-10', '2024-02-20', 'In Progress'),
-(2, 3, 'Task 3', 'Description for Task 3', 4, '2024-03-10', '2024-03-20', 'Completed'),
-(3, 4, 'Task 4', 'Description for Task 4', 5, '2024-04-10', '2024-04-20', 'Not Started'),
-(4, 5, 'Task 5', 'Description for Task 5', 2, '2024-05-10', '2024-05-20', 'In Progress');
+(1, 1, 'Database Query Optimization', 'Identify and optimize slow database queries', 17, '2024-07-15', '2024-08-31', 'In Progress'),
+(1, 2, 'Responsive UI Implementation', 'Implement responsive design for mobile devices', 12, '2024-09-01', '2024-10-31', 'Not Started'),
+(2, 3, 'User Survey', 'Conduct user survey for app feature prioritization', 13, '2024-08-20', '2024-09-10', 'Not Started'),
+(2, 4, 'App Wireframing', 'Create initial app wireframes', 14, '2024-10-01', '2024-10-15', 'Not Started'),
+(3, 5, 'Cloud Provider Comparison', 'Compare and select suitable cloud providers', 15, '2024-06-15', '2024-07-15', 'Completed'),
+(3, 6, 'Test Data Migration', 'Perform test migration with sample data set', 16, '2024-09-01', '2024-09-30', 'Not Started');
 
+-- Insert Assignments
 INSERT INTO Assignments (ProjectID, TaskID, UserID, AssignedDate) VALUES
-(1, 1, 2, '2024-01-01'),
-(1, 2, 3, '2024-01-15'),
-(2, 3, 4, '2024-02-01'),
-(3, 4, 5, '2024-03-01'),
-(4, 5, 2, '2024-04-01');
+(1, 8, 17, '2024-07-10'),
+(1, 9, 12, '2024-08-25'),
+(2, 10, 13, '2024-08-18'),
+(2, 11, 14, '2024-09-28'),
+(3, 12, 15, '2024-06-10'),
+(3, 13, 16, '2024-08-28');
 
-INSERT INTO CompletionProofs (TaskID, SubmittedBy, SubmissionDate, ProofFile, Status) VALUES
-(1, 2, '2024-01-21 10:00:00', 'proof1.pdf', 'Approved'),
-(2, 3, '2024-02-21 11:00:00', 'proof2.pdf', 'Pending'),
-(3, 4, '2024-03-21 12:00:00', 'proof3.pdf', 'Rejected'),
-(4, 5, '2024-04-21 13:00:00', 'proof4.pdf', 'Approved'),
-(5, 2, '2024-05-21 14:00:00', 'proof5.pdf', 'Pending');
+-- Insert CompletionProofs
+INSERT INTO CompletionProofs (TaskID, SubmittedBy, SubmissionDate, ProofFile, Status, VerifiedBy) VALUES
+(9, 12, '2024-07-14 15:30:00', 'cloud_provider_comparison_report.pdf', 'Approved', 11);
 
+-- Insert Notifications
 INSERT INTO Notifications (UserID, ProjectID, TaskID, Message) VALUES
-(2, 1, 1, 'Task 1 has been assigned to you.'),
-(3, 1, 2, 'Task 2 has been assigned to you.'),
-(4, 2, 3, 'Task 3 has been assigned to you.'),
-(5, 3, 4, 'Task 4 has been assigned to you.'),
-(2, 4, 5, 'Task 5 has been assigned to you.');
+(17 ,1, 1, 'New task assigned: Database Query Optimization'),
+(12, 1, 2, 'Upcoming task: Responsive UI Implementation starts on 2024-09-01'),
+(18, 2, 3, 'New project assigned: Mobile App Development'),
+(15, 3, 5, 'Your task "Cloud Provider Comparison" has been approved'),
+(16, 3, 6, 'Reminder: Test Data Migration task starts in 1 week');
 
 -- Triggers
 DELIMITER //
