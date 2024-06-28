@@ -69,8 +69,10 @@ CREATE TABLE CompletionProofs (
     SubmissionDate DATETIME NOT NULL,
     ProofFile VARCHAR(255) NOT NULL,
     Status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    VerifiedBy INT,
     FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID),
-    FOREIGN KEY (SubmittedBy) REFERENCES Users(UserID)
+    FOREIGN KEY (SubmittedBy) REFERENCES Users(UserID),
+    FOREIGN KEY (VerifiedBy) REFERENCES Users(UserID)
 );
 
 CREATE TABLE Notifications (
@@ -80,10 +82,12 @@ CREATE TABLE Notifications (
     TaskID INT,
     Message TEXT NOT NULL,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    NotificationStatus ENUM('Keep', 'Dismiss') DEFAULT 'Keep',
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID),
     FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID)
 );
+
 
 INSERT INTO Users (Username, Password, Email, UserTypeID) VALUES 
 ('AmitKumar', 'password123', 'amit.kumar@example.com', 1),
