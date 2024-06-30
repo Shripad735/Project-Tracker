@@ -47,33 +47,13 @@ app.get('/api/milestones/project/:projectid', async (req, res) => {
   });
 
 
-// Search for users by name or email
-app.get('/api/users/search', async (req, res) => {
-  try {
-    const query = req.query.q;
-    const users = await executeQuery('SELECT * FROM users WHERE name LIKE ? OR email LIKE ?', [`%${query}%`, `%${query}%`]);
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+
 
 //  Retrieve all projects a user is assigned to
 app.get('/api/users/:id/projects', async (req, res) => {
   try {
     const userid = req.params.id;
     const projects = await executeQuery('SELECT * FROM projects WHERE userid = ?', [userid]);
-    res.json(projects);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Search for projects by name or description
-app.get('/api/projects/search', async (req, res) => {
-  try {
-    const query = req.query.q;
-    const projects = await executeQuery('SELECT * FROM projects WHERE name LIKE ? OR description LIKE ?', [`%${query}%`, `%${query}%`]);
     res.json(projects);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -87,17 +67,6 @@ app.get('/api/projects/:id/milestones', async (req, res) => {
     const projectid = req.params.id;
     const milestones = await executeQuery('SELECT * FROM milestones WHERE projectid = ?', [projectid]);
     res.json(milestones);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Search for tasks by name or description
-app.get('/api/tasks/search', async (req, res) => {
-  try {
-    const query = req.query.q;
-    const tasks = await executeQuery('SELECT * FROM tasks WHERE name LIKE ? OR description LIKE ?', [`%${query}%`, `%${query}%`]);
-    res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
