@@ -25,6 +25,8 @@ db.connect(err => {
     console.log('Connected to the database');
 });
 
+// GET REQUESTS
+
 // Display all users
 app.get('/users', (req, res) => {
     db.query('SELECT * FROM users', (err, results) => {
@@ -220,6 +222,103 @@ app.get('/projectsby/:uid/', (req, res) => {
       return;
     }
     res.json(results);
+  });
+});
+
+// POST REQUESTS
+
+// Add new usertype
+app.post('/usertypes', (req, res) => {
+  const { usertype } = req.body;
+
+  if (!usertype) {
+      res.status(400).send('Usertype is required!');
+      return;
+  }
+
+  const query = 'INSERT INTO usertypes (usertypeid, usertype) VALUES (NULL, ?)';
+  db.query(query, [usertype], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, usertype });
+  });
+});
+
+// Add new user
+app.post('/users', (req, res) => {
+  const { username, name, email, password, usertype } = req.body;
+
+  if (!username || !name || !email || !password || !usertype) {
+      res.status(400).send('Username, name, email, password & usertype all are required!');
+      return;
+  }
+
+  const query = 'INSERT INTO users (userid, username, name, email, password, usertype) VALUES (NULL, ?, ?, ?, ?, ?)';
+  db.query(query, [username, name, email, password, usertype], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, name, email });
+  });
+});
+
+// Add new project
+app.post('/projects', (req, res) => {
+  const { projectname, description, startdate, enddate, created_by, status } = req.body;
+
+  if (!projectname || !startdate || !enddate || !created_by) {
+      res.status(400).send('Project name, start date, end date & creator ID all are required!');
+      return;
+  }
+
+  const query = 'INSERT INTO projects (projectid, projectname, description, startdate, enddate, created_by, status) VALUES (NULL, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [projectname, description, startdate, enddate, created_by, status], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, projectname, created_by });
+  });
+});
+
+// Add new milestone
+app.post('/milestones', (req, res) => {
+  const { ProjectID, MilestoneName, Description, StartDate, DueDate, Status } = req.body;
+
+  if (!ProjectID || !MilestoneName || !StartDate || !DueDate) {
+      res.status(400).send('Milestone name, reference project, start date, end date all are required!');
+      return;
+  }
+
+  const query = 'INSERT INTO milestones (milestoneid, projectid, milestonename, description, startdate, duedate, status) VALUES (NULL, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [ProjectID, MilestoneName, Description, StartDate, DueDate, Status], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, MilestoneName, Status });
+  });
+});
+
+// Add new tasks
+app.post('/tasks', (req, res) => {
+  const { MilestoneID, TaskName, Description, StartDate, EndDate, AssignedTo, Status } = req.body;
+
+  if (!MilestoneID || !TaskName || !StartDate || !EndDate || !AssignedTo) {
+      res.status(400).send('Task name, reference milestone, start date, end date and assigned user all are required!');
+      return;
+  }
+
+  const query = 'INSERT INTO tasks (taskid, milestoneid, taskname, description, startdate, enddate, assignedto, status) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [MilestoneID, TaskName, Description, StartDate, EndDate, AssignedTo, Status], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, TaskName, AssignedTo, Status });
   });
 });
 
