@@ -322,6 +322,100 @@ app.post('/tasks', (req, res) => {
   });
 });
 
+// DELETE REQUESTS
+
+// Delete existing user
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    res.status(400).send('User ID is required');
+    return;
+  }
+
+  const query = 'DELETE FROM users WHERE userid = ?';
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('User not found');
+      return;
+    }
+    res.status(200).send('User deleted successfully');
+  });
+});
+
+// Delete existing task
+app.delete('/tasks/:tid', (req, res) => {
+  const { tid } = req.params;
+
+  if (!tid) {
+    res.status(400).send('Task ID is required');
+    return;
+  }
+
+  const query = 'DELETE FROM tasks WHERE taskid = ?';
+  db.query(query, [tid], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Task not found');
+      return;
+    }
+    res.status(200).send('Task deleted successfully');
+  });
+});
+
+// Delete existing milestone
+app.delete('/milestones/:mid', (req, res) => {
+  const { mid } = req.params;
+
+  if (!mid) {
+    res.status(400).send('Milestone ID is required');
+    return;
+  }
+
+  const query = 'DELETE FROM milestones WHERE milestoneid = ?';
+  db.query(query, [mid], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Milestone not found');
+      return;
+    }
+    res.status(200).send('Milestone deleted successfully');
+  });
+});
+
+// Delete existing project
+app.delete('/projects/:pid', (req, res) => {
+  const { pid } = req.params;
+
+  if (!pid) {
+    res.status(400).send('Project ID is required');
+    return;
+  }
+
+  const query = 'DELETE FROM projects WHERE projectid = ?';
+  db.query(query, [pid], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('Project not found');
+      return;
+    }
+    res.status(200).send('Project deleted successfully');
+  });
+});
+
 app.listen(port, ()=>{
     console.log(`Server is running at http://localhost:${port}`);
 });
