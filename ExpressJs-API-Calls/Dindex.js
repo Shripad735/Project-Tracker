@@ -101,7 +101,7 @@ app.get('/tasks/:pid/:mid/:tid', async (req, res) => {
 });
 
 // Retrieves all tasks assigned to a user
-app.get('/api/tasks/assignedto/:userid', async (req, res) => {
+app.get('/tasks/assignedto/:userid', async (req, res) => {
     try {
         const userid = req.params.userid;
         const tasks = await executeQuery('SELECT * FROM tasks WHERE assignedto = ?', [userid]);
@@ -151,16 +151,6 @@ app.get('/api/projects/search', async (req, res) => {
     }
 });
 
-// // Retrieve all milestones for a project
-// app.get('/api/projects/:id/milestones', async (req, res) => {
-//     try {
-//         const projectid = req.params.id;
-//         const milestones = await executeQuery('SELECT * FROM milestones WHERE projectid = ?', [projectid]);
-//         res.json(milestones);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 // Search for tasks by name or description
 app.get('/api/tasks/search', async (req, res) => {
@@ -173,16 +163,6 @@ app.get('/api/tasks/search', async (req, res) => {
     }
 });
 
-// // Retrieve all comments for a task 
-// app.get('/api/tasks/:id/comments', async (req, res) => {
-//     try {
-//         const taskid = req.params.id;
-//         const comments = await executeQuery('SELECT * FROM comments WHERE taskid = ?', [taskid]);
-//         res.json(comments);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 // Search for milestones by name or description
 app.get('/api/milestones/search', async (req, res) => {
@@ -195,16 +175,7 @@ app.get('/api/milestones/search', async (req, res) => {
     }
 });
 
-// Retrieve all tasks for a milestone 
-// app.get('/api/milestones/:id/tasks', async (req, res) => {
-//     try {
-//         const milestoneid = req.params.id;
-//         const tasks = await executeQuery('SELECT * FROM tasks WHERE milestoneid = ?', [milestoneid]);
-//         res.json(tasks);
-//     } catch (error) {
-//         res.status(500).json({ error: error.message });
-//     }
-// });
+
 
 // Retrieve all assignments
 app.get('/api/assignments', async (req, res) => {
@@ -313,7 +284,7 @@ app.get('/api/projects/:projectId/details', async (req, res) => {
         const query = `
             SELECT p.Status, a.UserID
             FROM projects p
-            JOIN assignments a ON p.ProjectID = a.ProjectID
+            JOIN tasks a ON p.ProjectID = a.ProjectID
             WHERE p.ProjectID = ?
         `;
         const projectDetails = await executeQuery(query, [projectId]);
@@ -366,6 +337,179 @@ app.get('/api/projects/withcounts', async (req, res) => {
     }
 });
 
+
+
+//Adding route
+
+// Add new user
+app.post('/users', (req, res) => {
+  const { username, password,email,usertypeid} = req.body;
+
+  if (!username || !email || !password || !usertypeid) {
+      res.status(400).send('Username, password,email,& usertypeid all are required!');
+      return;
+  }
+
+  const query = 'INSERT INTO users (userid,username,password,email,usertypeid) VALUES (NULL, ?,  ?, ?, ?)';
+  db.query(query, [username, password, email, usertypeid], (err, results) => {
+      if (err) {
+          res.status(500).send(err);
+          return;
+      }
+      res.status(201).json({ id: results.insertId, email });
+  });
+});
+
+// Add new project
+app.post('/projects', (req, res) => {
+    const { projectname, description,startdate,enddate} = req.body;
+  
+    if (!projectname || !description || !startdate || !enddate) {
+        res.status(400).send('projectname, description,startdate,& enddate all are required!');
+        return;
+    }
+  
+    const query = 'INSERT INTO projects (ProjectId,projectname,description,startDate,endDate,Status) VALUES (NULL, ?,  ?, ?, ?,NULL)';
+    db.query(query, [projectname, description,startdate,enddate], (err, results) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.status(201).json({ id: results.insertId, projectname });
+    });
+  });
+
+
+
+//Deleting Routes
+// Delete a user by ID
+app.delete('/user/:id', async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        // Execute the delete query
+        const result = await executeQuery('DELETE FROM users WHERE userid = ?', [userId]);
+
+        // Check if any rows were affected (i.e., if a user was deleted)
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Delete a project by ID
+app.delete('/projects/:pid', async (req, res) => {
+    const { pid } = req.params;
+
+    try {
+        // Execute the delete query
+        const result = await executeQuery('DELETE FROM projects WHERE projectid = ?', [pid]);
+
+        // Check if any rows were affected (i.e., if a project was deleted)
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        res.json({ message: 'Project deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+//Update 
+
+// Update user information
+app.put('/users/:userid', (req, res) => {
+    const userId = req.params.userid;
+    const { username, password,email, usertypeid } = req.body;
+
+    // Validate required fields
+    if (!username || !email || !password || !usertypeid) {
+        res.status(400).send('Username, email, password & usertype all are required!');
+        return;
+    }
+
+    const query = 'UPDATE users SET username=?,  password=?, email=?, usertypeid=? WHERE userid=?';
+    db.query(query, [username,  password, email, usertypeid, userId], (err, results) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+
+        // Check if any rows were affected (i.e., if the user was found and updated)
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({ message: 'User updated successfully' });
+    });
+});
+
+
+
+// Update task information
+app.put('/tasks/:taskId', (req, res) => {
+    const taskId = req.params.taskId; // Corrected parameter name
+    const { description, assignedTo } = req.body;
+
+    // Validate required fields
+    if (!description || !assignedTo) {
+        res.status(400).send('Description and assignedTo are required fields!');
+        return;
+    }
+
+    const query = 'UPDATE tasks SET description=?, assignedTo=? WHERE taskid=?'; // Corrected SQL query
+    db.query(query, [description, assignedTo, taskId], (err, results) => {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+
+        // Check if any rows were affected (i.e., if the task was found and updated)
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.json({ message: 'Task updated successfully' });
+    });
+});
+
+
+// // Update project information
+// app.put('/projects/:projectId', (req, res) => {
+//     const projectId = req.params.projectId; // Corrected parameter name
+//     const { projectname, description, startdate, enddate } = req.body;
+
+//     // Validate required fields
+//     if (!projectname || !description || !startdate || !enddate) {
+//         res.status(400).send('Project name, description, start date, and end date are required fields!');
+//         return;
+//     }
+
+//     const query = 'UPDATE projects SET projectname=?, description=?, startdate=?, enddate=? WHERE projectid=?'; // Corrected SQL query
+//     db.query(query, [projectname, description, startdate, enddate, projectId], (err, results) => {
+//         if (err) {
+//             res.status(500).send(err);
+//             return;
+//         }
+
+//         // Check if any rows were affected (i.e., if the project was found and updated)
+//         if (results.affectedRows === 0) {
+//             return res.status(404).json({ message: 'Project not found' });
+//         }
+
+//         res.json({ message: 'Project updated successfully' });
+//     });
+// });
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
+
