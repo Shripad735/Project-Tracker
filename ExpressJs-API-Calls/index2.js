@@ -11,7 +11,7 @@ app.get('/',(req,res)=>{
 // Establish connectivity with database
 const db = mysql.createConnection({
     host: 'localhost',
-    port: 3306,
+    port: 3307,
     user: 'root',
     password: '',
     database: 'projectplanner'
@@ -415,6 +415,379 @@ app.delete('/projects/:pid', (req, res) => {
     res.status(200).send('Project deleted successfully');
   });
 });
+
+ /////////////          om pawar work for api's         ////////////////////////////////
+
+// Get all notfications
+app.get('/notifications', (req, res) => {
+  db.query('SELECT * FROM notificationssent', (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json(results);
+  });
+});
+
+//Get all Notifications which are unviewed 
+app.get('/notifications/:userid', (req, res) => {
+  const { userid } = req.params;
+  const query = `
+    SELECT ns.*, n.message
+    FROM notificationssent ns
+    JOIN notifications n ON ns.notn = n.notid
+    WHERE ns.userid = ? AND ns.viewed = 0
+  `;
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).send('No notifications found for this user with viewed status false');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+
+// Get specific notification which are unviewed
+app.get('/notifications/:userid/:notnid', (req, res) => {
+  const { userid, notnid } = req.params;
+  const query = 'SELECT * FROM notificationssent WHERE userid = ? AND notnid = ? AND viewed = 0';
+
+  db.query(query, [userid, notnid], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).send('No notifications found for this user with viewed status false');
+      return;
+    }
+
+    res.json(results);
+  });
+});
+
+//update all notifications sent to user 
+app.put('/notifications/:userid', (req, res) => {
+  const {userid} = req.params;
+
+  const query = `
+    UPDATE notificationssent
+    SET viewed = 1
+    WHERE userid = ?
+  `;
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('No notification found for this user with the specified notification ID');
+      return;
+    }
+    res.status(200).send('Notification status updated to viewed');
+  });
+});
+
+//update the perticular notification sent to user 
+app.put('/notifications/:userid/:notnid', (req, res) => {
+  const { userid, notnid } = req.params;
+
+  const query = `
+    UPDATE notificationssent
+    SET viewed = 1
+    WHERE userid = ? AND notnid = ?
+  `;
+
+  db.query(query, [userid, notnid], (err, results) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (results.affectedRows === 0) {
+      res.status(404).send('No notification found for this user with the specified notification ID');
+      return;
+    }
+    res.status(200).send('Notification status updated to viewed');
+  });
+});
+
+//Get all completionproofs
+app.get('/completionproofs', (req, res) => {
+  const query = `
+    SELECT *
+    FROM completionproofs
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching completion proofs:", err);
+      res.status(500).json({ error: "Error fetching completion proofs" });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+// GET endpoint to fetch a completion proof by TaskID
+app.get('/completionproofs/:taskid', (req, res) => {
+  const { taskid } = req.params;
+
+  const query = `
+     SELECT SubmissionAt , ProofFile
+    FROM completionproofs
+    WHERE TaskID = ?
+  `;
+
+  db.query(query, [taskid], (err, results) => {
+    if (err) {
+      console.error("Error fetching completion proof:", err);
+      res.status(500).json({ error: "Error fetching completion proof" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: "No completion proof found for this TaskID" });
+      return;
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
+// to approve task commpletion
+app.put('/completionproofs/:taskid/approve', (req, res) => {
+  const { taskid } = req.params;
+
+  const updateQuery = `
+    UPDATE completionproofs
+    SET Status = 'Approved'
+    WHERE TaskID = ? AND Status = 'Pending'
+  `;
+
+  db.query(updateQuery, [taskid], (err, results) => {
+    if (err) {
+      console.error("Error updating completion proof status:", err);
+      res.status(500).json({ error: "Error updating completion proof status" });
+      return;
+    }
+
+    if (results.affectedRows === 0) {
+      res.status(404).json({ error: `No completion proof found for TaskID ${taskid} with 'Pending' status` });
+      return;
+    }
+
+    res.status(200).json({ message: "Completion proof status updated to Approved" });
+  });
+});
+
+
+
+// PUT endpoint to reject completion proof status if pending
+app.put('/completionproofs/:taskid/reject', (req, res) => {
+  const { taskid } = req.params;
+  const updateQuery = `
+    UPDATE completionproofs
+    SET Status = 'Rejected'
+    WHERE TaskID = ? AND Status = 'Pending'
+  `;
+
+  db.query(updateQuery, [taskid], (err, results) => {
+    if (err) {
+      console.error("Error updating completion proof status:", err);
+      res.status(500).json({ error: "Error updating completion proof status" });
+      return;
+    }
+
+    if (results.affectedRows === 0) {
+      res.status(404).json({ error: `No completion proof found for TaskID ${taskid} with 'Pending' status` });
+      return;
+    }
+
+    res.status(200).json({ message: "Completion proof status updated to Rejected" });
+  });
+});
+
+//update users
+app.put('/users/:userid', (req, res) => {
+  const UserID = req.params.userid;
+  const { Username, Password, Email, UserType, Name } = req.body;
+
+  // Validate required fields
+  if (!Username || !Email || !Password || !UserType || !Name) {
+    res.status(400).send('Username, email, password, usertype, and name are all required!');
+    return;
+  }
+
+  const query = 'UPDATE users SET username=?, password=?, email=?, usertype=?, name=? WHERE userid=?';
+  db.query(query, [Username, Password, Email, UserType, Name, UserID], (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+
+    // Check if any rows were affected (i.e., if the user was found and updated)
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User updated successfully' });
+  });
+});
+
+// Get Overdued tasks by user ID as completed 
+app.get('/:userid/tasks/overdue-completed', (req, res) => {
+  const { userid } = req.params;
+
+  const query = `
+    SELECT *
+    FROM tasks
+    WHERE AssignedTo = ?
+      AND Status = 'Completed'
+      AND EndDate < CURDATE()
+  `;
+
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      console.error("Error fetching in progress tasks:", err);
+      res.status(500).json({ error: "Error fetching in progress tasks" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: `No in progress tasks found for user ID ${userid}` });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+
+// Get Overdued tasks by user ID as incomplete
+app.get('/:userid/tasks/overdue-incomplete', (req, res) => {
+  const { userid } = req.params;
+
+  const query = `
+    SELECT *
+    FROM tasks
+    WHERE AssignedTo = ?
+      AND Status = 'In Progress'
+      AND EndDate < CURDATE()
+  `;
+
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      console.error("Error fetching in progress tasks:", err);
+      res.status(500).json({ error: "Error fetching in progress tasks" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: `No in progress tasks found for user ID ${userid}` });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+// Get Completed tasks by user ID
+app.get('/:userid/tasks/completed', (req, res) => {
+  const { userid } = req.params;
+
+  const query = `
+    SELECT *
+    FROM tasks
+    WHERE AssignedTo = ?
+      AND Status = 'Completed'
+  `;
+
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      console.error("Error fetching in progress tasks:", err);
+      res.status(500).json({ error: "Error fetching in progress tasks" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: `No in progress tasks found for user ID ${userid}` });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+// Get Not Started tasks by user ID
+app.get('/:userid/tasks/notStarted', (req, res) => {
+  const { userid } = req.params;
+
+  const query = `
+    SELECT *
+    FROM tasks
+    WHERE AssignedTo = ?
+      AND StartDate > CURDATE()
+  `;
+
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      console.error("Error fetching in progress tasks:", err);
+      res.status(500).json({ error: "Error fetching in progress tasks" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: `No in progress tasks found for user ID ${userid}` });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+// Get In Progress tasks by user ID
+app.get('/:userid/tasks/inprogress', (req, res) => {
+  const { userid } = req.params;
+
+  const query = `
+    SELECT *
+    FROM tasks
+    WHERE AssignedTo = ?
+      AND StartDate <= CURDATE()
+      AND EndDate >= CURDATE()
+  `;
+
+
+  db.query(query, [userid], (err, results) => {
+    if (err) {
+      console.error("Error fetching in progress tasks:", err);
+      res.status(500).json({ error: "Error fetching in progress tasks" });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: `No in progress tasks found for user ID ${userid}` });
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+
 
 app.listen(port, ()=>{
     console.log(`Server is running at http://localhost:${port}`);
