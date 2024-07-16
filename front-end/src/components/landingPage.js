@@ -3,6 +3,7 @@ import React from 'react';
 import './landingPage.css';
 import FeatureCard from './FeatureCard';
 import { FaBell, FaUsers, FaFileAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const LandingPage = () => {
   const features = [
@@ -40,8 +41,13 @@ const LandingPage = () => {
       </div>
       <br />
       <br/>
-      <div> <button className='button-73'  style = {{marginTop: '20px',
-marginLeft: '39px'}}>Get started now</button></div>
+      <div>
+        <Link to="/login">
+          <button className='button-73' style={{ marginLeft: '0px', marginRight: '0px' }}>
+            Get started now
+          </button>
+        </Link>
+      </div>
       
     </div>
   );
