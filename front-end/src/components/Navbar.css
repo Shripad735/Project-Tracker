@@ -1,0 +1,44 @@
+.navbar {
+    background-color: #0077b5;
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.user-info span {
+    margin-right: 1rem;
+}
+
+.user-info button {
+    padding: 0.5rem 1rem;
+    background-color: #ff5722;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.user-info button:hover {
+    background-color: #e64a19;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-icon {
+    color: #fff;
+}
