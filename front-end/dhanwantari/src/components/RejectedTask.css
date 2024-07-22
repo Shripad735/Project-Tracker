@@ -1,0 +1,73 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px; /* Adjust this width according to your sidebar design */
+    background-color: #f0f0f0; /* Change as needed */
+    height: 100%; /* Full height */
+}
+
+.dashboard {
+    flex: 1;
+    padding: 2rem;
+    background-color: #fafafa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto; /* Ensure the content is scrollable if it overflows */
+}
+
+.dashboard h2 {
+    margin-bottom: 2rem;
+    color: #4e4e4e;
+}
+
+.rejected-work-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 800px;
+}
+
+.rejected-work-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rejected-work-info {
+    border-bottom: 1px solid #ececec;
+    padding-bottom: 1rem;
+}
+
+.rejected-work-info h3 {
+    color: #333; /* Change to black */
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.rejected-work-info p {
+    color: #333; /* Change to black */
+    font-size: 1rem;
+    margin: 0.5rem 0;
+}
+
+/* Add extra spacing between the specific lines */
+.rejected-work-info .rejection-reason,
+.rejected-work-info .rejected-by {
+    margin-top: 1rem; /* Adds space between the lines */
+    color: #333; /* Ensure the text is black */
+}
+
+.rejected-work-content {
+    color: #333;
+    font-size: 1rem;
+}
