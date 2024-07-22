@@ -1,0 +1,58 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    color: #360fd0;
+    margin-bottom: 30px;
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.project-list ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between projects */
+    padding: 0;
+    list-style-type: none; /* Remove default list styling */
+}
+
+.project {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(33.333% - 20px); /* Three projects per row */
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+    padding: 20px;
+}
+
+.project:hover {
+    background-color: #f1f1f1;
+}
+
+.chart-container {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.project-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

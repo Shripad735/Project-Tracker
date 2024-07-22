@@ -1,0 +1,139 @@
+h2 {
+    text-align: center;
+}
+ 
+ body {
+            display:flex;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: rgb(230, 229, 229);
+        }
+
+.vertical-line-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh; /* Adjust height to make sure it's not too compact */
+    width: 200px; /* Fixed width for the container */
+    position: relative;
+
+}
+
+.vertical-line {
+    width: 10px;
+    height: calc(100% - 60px); /* Adjust height to make room for the dates */
+    background-color: gray;
+    position: relative;
+}
+
+.completed-line {
+    background-color: gray;
+    animation: expandGreenLine 2s forwards;
+}
+@keyframes expandGreenLine {
+    0% { background-color: gray; }
+    100% { background-color: green; }
+}
+
+.start-date, .end-date {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    text-transform: uppercase;
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+.start-date {
+    margin-bottom: 10px; /* Space between start date and line */
+}
+.end-date {
+    margin-top: 10px; /* Space between end date and line */
+}
+
+.task, .milestone {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    width: 200px;
+    height: 30px;
+    cursor: pointer;
+}
+
+
+.task::before {
+    content: '';
+    width: 16px; /* Size of the dots */
+    height: 16px; /* Size of the dots */
+    background: #ffffff;
+    border: 2px solid #006E51;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-left: -5px;
+    /* transition: background-color 3s ease; */
+}
+
+.task.completed::before {
+    background-color: green;
+    border: 2px solid green;
+}
+
+.milestone::before { 
+    content: '★';
+    width: 16px; /* Increased size of the dots */
+    height: 16px; /* Increased size of the dots */
+    font-size: 35px;
+    color:#FFD700;
+    margin-right: 17px;
+    margin-left: -9px;
+    opacity: 0.5; /* Initial opacity */
+    /* transition: color 0.3s ease, opacity 0.3s ease; */
+}
+
+.milestone.completed::before {
+    color: #FFD700;
+    opacity: 1;
+}
+
+.task-label {
+    font-size: 14px;
+}
+
+.milestone-label {
+    font-size: 14px;
+    height: calc(100% - 60px);
+}
+
+/* Adjust the percentage values for each task's and milestone's position on the line */
+.task1 { top: 5%; }
+.task2 { top: 15%; }
+.task3 { top: 25%; }
+.milestone1 { top: 32%; }
+.task4 { top: 45%; }
+.task5 { top: 55%; }
+.task6 { top: 65%; }
+.milestone2 { top: 75%; }
+
+/* Task info box */
+.task-info {
+    position: absolute;
+    left: 300px; /* Adjust to position the box on the right side of the line */
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #006E51;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none; 
+}
+
+.task-info::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 220px; /*Adjust to connect the box to the line*/
+    border-left: 10px solid #006E51; /* Changed to border-left to make the arrow point outwards */
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent; 
+    transform: translateY(-50%);                    /*Beside the point */
+}
+
