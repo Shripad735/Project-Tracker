@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ProjectList from './components/ProjectList';
 import ProjectTimeline from './components/ProjectTimeline';
+import RejectedTask from './components/RejectedTask';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/sidebar" element={<Sidebar />} />
         <Route path="/projectlist" element={<ProjectList />} />
         <Route path="/project/:id" element={<ProjectTimeline />} />
+        <Route path="/rejectedtasks" element={<RejectedTask />} />
         <Route path="*" element={<Navigate to="/landing" />} />
       </Routes>
     </Router>
