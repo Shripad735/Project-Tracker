@@ -12,6 +12,7 @@
 
 .dashboard h2 {
     margin-bottom: 1rem;
+    color: #4e4e4e; /* Darker color for better visibility */
 }
 
 .option-cards {
@@ -19,4 +20,24 @@
     gap: 2rem;
     justify-content: center;
     flex-wrap: wrap; /* Allow wrapping of cards if needed */
+}
+
+.option-card {
+    background: #ffffff; /* Ensure background is white or light */
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 250px; /* Adjust width as needed */
+}
+
+.option-card h3 {
+    color: #333; /* Set a visible color for the card titles */
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.option-card p {
+    color: #666; /* Set a visible color for the card descriptions */
+    font-size: 1rem;
 }
