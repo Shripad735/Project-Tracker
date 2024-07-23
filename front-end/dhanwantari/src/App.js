@@ -27,7 +27,7 @@ function App() {
         <Route path="/projectlist" element={<ProjectList />} />
         <Route path="/project/:id" element={<ProjectTimeline />} />
         <Route path="/rejectedtasks" element={<RejectedTask />} />
-        <Route path={routePath} element={<CreateProject />} />
+        <Route path="/create-project" element={<CreateProject />} />
         <Route path="*" element={<Navigate to="/landing" />} />
       </Routes>
     </Router>
