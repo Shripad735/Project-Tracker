@@ -25,10 +25,12 @@ function Dashboard() {
                                 description="View and manage your existing projects."
                             />
                         </Link>
+                        <Link to="/pending-verifications">
                         <OptionCard
                             title="Pending Verification of Tasks"
                             description="Verify tasks that are pending approval."
                         />
+                        </Link> 
                     </div>
                 </div>
             </div>
