@@ -1,2 +1,2 @@
 # Project-Tracker
-Project Tracker Using React , Node , Express , MySQL
+Project Tracker Using React.js, Node.js, Express.js, MySQL
