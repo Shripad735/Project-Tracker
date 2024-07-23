@@ -12,6 +12,9 @@ import ProjectList from './components/ProjectList';
 import ProjectTimeline from './components/ProjectTimeline';
 import RejectedTask from './components/RejectedTask';
 import CreateProject from './components/CreateProject';
+import PendingVerifications from './components/PendingVerifications';
+import ProofDetails from './components/ProofDetails';
+
 
 function App() {
   return (
@@ -29,6 +32,8 @@ function App() {
         <Route path="/rejectedtasks" element={<RejectedTask />} />
         <Route path="/create-project" element={<CreateProject />} />
         <Route path="*" element={<Navigate to="/landing" />} />
+        <Route path="/pending-verifications" element={<PendingVerifications />} />
+        <Route path="/proof/:taskId" element={<ProofDetails />} />
       </Routes>
     </Router>
   );
