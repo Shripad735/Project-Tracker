@@ -1,0 +1,78 @@
+/* ProofDetails.css */
+
+body{
+  background-color: rgb(234, 173, 98);
+}
+
+.proof-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .proof-details-card {
+    background-color: #e6f2ff;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 800px;
+  }
+  
+  .proof-details-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .proof-info {
+    margin-bottom: 1rem;
+  }
+  
+  .proof-info p {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .proof-file-link {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .proof-file-link:hover {
+    text-decoration: underline;
+  }
+  
+  .status-select-container {
+    margin-bottom: 1rem;
+  }
+  
+  .status-select-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .status-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+  
+  .submit-button {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }

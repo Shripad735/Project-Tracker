@@ -1,0 +1,55 @@
+/* PendingVerifications.css */
+
+body{
+  background-color: rgb(234, 173, 98);
+}
+
+.pending-verifications-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .pending-verifications-card {
+    background-color: #b1cae4;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    height:auto;
+  }
+  
+  .pending-verifications-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .pending-task-item {
+    background-color: #ffeeba;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .pending-task-name {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .see-proof-button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+  
+  .see-proof-button:hover {
+    background-color: #0056b3;
+  }
